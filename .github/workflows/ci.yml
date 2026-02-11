@@ -77,7 +77,7 @@ jobs:
       - name: Start core stack for smoke tests
         run: |
           bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml build image-builder
-          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml up -d --remove-orphans --wait --wait-timeout 300 \
+          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml up -d --remove-orphans \
             postgres redis rabbitmq db-init \
             auth-service orders-service warehouse-service delivery-service notification-service
 
