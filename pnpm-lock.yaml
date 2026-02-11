@@ -384,6 +384,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+      ws:
+        specifier: ^8.18.3
+        version: 8.19.0
     devDependencies:
       '@types/amqplib':
         specifier: ^0.10.7
