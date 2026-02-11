@@ -4,6 +4,8 @@ import { Pool, type QueryResult, type QueryResultRow } from "pg";
 
 const DEFAULT_DATABASE_URL = "postgresql://foodo:foodo@localhost:5432/foodo";
 const MIGRATION_LOCK_KEY = 8342001;
+const DB_AUTO_MIGRATE_ENV = (process.env.DB_AUTO_MIGRATE ?? "true").trim().toLowerCase();
+const DB_AUTO_MIGRATE_ENABLED = !(DB_AUTO_MIGRATE_ENV === "0" || DB_AUTO_MIGRATE_ENV === "false" || DB_AUTO_MIGRATE_ENV === "no");
 
 type SqlScalar = string | number | boolean | Date | null;
 export type SqlParam = SqlScalar | SqlScalar[];
@@ -55,23 +57,31 @@ export function createDatabaseClient(serviceName: string, databaseUrl = process.
     }
 
     initPromise = (async () => {
-      const sql = loadMigrationSql();
       const client = await pool.connect();
       try {
-        // Serialize migration/seed execution across all services to avoid startup deadlocks.
-        await client.query("SELECT pg_advisory_lock($1)", [MIGRATION_LOCK_KEY]);
-        await client.query(sql);
+        if (DB_AUTO_MIGRATE_ENABLED) {
+          const sql = loadMigrationSql();
+          // Serialize migration/seed execution across all services to avoid startup deadlocks.
+          await client.query("SELECT pg_advisory_lock($1)", [MIGRATION_LOCK_KEY]);
+          await client.query(sql);
+        } else {
+          // In production compose we run schema setup via db-init container once.
+          await client.query("SELECT 1");
+        }
       } finally {
-        try {
-          await client.query("SELECT pg_advisory_unlock($1)", [MIGRATION_LOCK_KEY]);
-        } catch {
-          // No-op: unlock can fail if connection already dropped.
+        if (DB_AUTO_MIGRATE_ENABLED) {
+          try {
+            await client.query("SELECT pg_advisory_unlock($1)", [MIGRATION_LOCK_KEY]);
+          } catch {
+            // No-op: unlock can fail if connection already dropped.
+          }
         }
         client.release();
       }
       initialized = true;
+      const initMode = DB_AUTO_MIGRATE_ENABLED ? "migration+seed" : "connectivity-check";
       // Keep startup logs visible per service; helps debug infra issues fast.
-      console.log(`[${serviceName}] PostgreSQL migration+seed ready`);
+      console.log(`[${serviceName}] PostgreSQL ${initMode} ready`);
     })();
 
     try {

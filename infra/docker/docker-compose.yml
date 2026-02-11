@@ -2,6 +2,7 @@ name: foodo
 
 x-foodo-env: &foodo-env
   NODE_ENV: production
+  DB_AUTO_MIGRATE: "false"
   DATABASE_URL: postgresql://foodo:foodo@postgres:5432/foodo
   RABBITMQ_URL: amqp://foodo:foodo@rabbitmq:5672
   AUTH_API_URL: http://auth-service:3001

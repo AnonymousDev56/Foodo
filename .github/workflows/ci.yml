@@ -74,11 +74,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Start production stack (without ngrok/webhook sync)
-        env:
-          FOODO_NGROK_AUTOSTART: "0"
-          FOODO_TELEGRAM_SYNC_WEBHOOKS: "0"
-        run: pnpm start:prod
+      - name: Start core stack for smoke tests
+        run: |
+          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml build image-builder
+          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml up -d --remove-orphans \
+            postgres redis rabbitmq db-init \
+            auth-service orders-service warehouse-service delivery-service notification-service
 
       - name: Wait for API services
         run: |
@@ -105,8 +106,8 @@ jobs:
       - name: Show compose status on failure
         if: failure()
         run: |
-          bash ./scripts/docker-compose.sh ps || true
-          bash ./scripts/docker-compose.sh logs --tail=200 || true
+          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml ps || true
+          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml logs --tail=300 || true
 
       - name: Stop production stack
         if: always()
