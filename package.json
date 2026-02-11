@@ -1,0 +1,26 @@
+{
+  "name": "foodo",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.1.0",
+  "scripts": {
+    "dev": "pnpm run dev:stop && bash ./scripts/run-dev-with-local-env.sh",
+    "dev:stop": "for p in 3001 3002 3003 3004 3005 3006 3007 3008 3009 5173 5174 5175 5176 5177; do fuser -k ${p}/tcp 2>/dev/null || true; done; pkill -f \"[s]rc/main.ts\" || true; pkill -f \"[/]vite/bin/vite.js\" || true; pkill -f \"[t]sc -p tsconfig.json --watch\" || true",
+    "dev:reset": "pnpm run dev",
+    "ngrok:start": "bash ./scripts/start-ngrok.sh",
+    "ngrok:stop": "bash ./scripts/stop-ngrok.sh",
+    "health": "for p in 3001 3002 3003 3004 3005 3006 3007 3008 3009 8080; do echo \"=== $p ===\"; curl -sS --max-time 2 http://127.0.0.1:$p/health || true; echo; done; for p in 5173 5174 5175; do echo \"=== $p ===\"; curl -sS --max-time 2 http://127.0.0.1:$p >/dev/null && echo ok || true; echo; done",
+    "smoke:critical": "node ./scripts/smoke-critical.mjs",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "infra:up": "bash ./scripts/docker-compose.sh up -d",
+    "infra:down": "bash ./scripts/docker-compose.sh down",
+    "start:prod": "bash ./scripts/start-prod.sh",
+    "stop:prod": "bash ./scripts/stop-prod.sh",
+    "logs:prod": "bash ./scripts/logs-prod.sh"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.3"
+  }
+}

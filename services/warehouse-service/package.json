@@ -1,0 +1,23 @@
+{
+  "name": "@foodo/warehouse-service",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@foodo/shared-db": "workspace:*",
+    "@nestjs/common": "^10.4.12",
+    "@nestjs/core": "^10.4.12",
+    "@nestjs/platform-express": "^10.4.12",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

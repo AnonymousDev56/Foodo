@@ -1,0 +1,12 @@
+node_modules
+.pnpm-store
+.turbo
+dist
+coverage
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
