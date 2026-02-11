@@ -13,6 +13,8 @@
     "smoke:critical": "node ./scripts/smoke-critical.mjs",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
+    "release:check": "pnpm typecheck && pnpm smoke:critical",
+    "release:tag": "bash ./scripts/release-tag.sh",
     "infra:up": "bash ./scripts/docker-compose.sh up -d",
     "infra:down": "bash ./scripts/docker-compose.sh down",
     "start:prod": "bash ./scripts/start-prod.sh",

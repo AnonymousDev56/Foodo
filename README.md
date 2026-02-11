@@ -98,6 +98,29 @@ Run automated critical smoke flow (login -> order -> courier assignment -> done)
 pnpm smoke:critical
 ```
 
+## Release Management
+
+Release artifacts and process docs:
+
+- `CHANGELOG.md`
+- `docs/release/checklist.md`
+- `docs/release/tagging.md`
+- `.github/RELEASE_TEMPLATE.md`
+
+Release gate (required before tag):
+
+```bash
+pnpm release:check
+```
+
+Create release tag (annotated):
+
+```bash
+pnpm release:tag -- v0.9.0
+git push origin main
+git push origin v0.9.0
+```
+
 Check gateway health:
 
 ```bash
