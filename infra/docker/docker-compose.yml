@@ -12,7 +12,7 @@ x-foodo-env: &foodo-env
   JWT_SECRET: ${JWT_SECRET:-foodo_dev_jwt_secret}
 
 x-foodo-service: &foodo-service
-  image: foodo/monorepo:local
+  image: ${FOODO_MONOREPO_IMAGE:-foodo/monorepo:local}
   restart: unless-stopped
   environment:
     <<: *foodo-env
@@ -29,7 +29,7 @@ x-foodo-service: &foodo-service
       condition: service_completed_successfully
 
 x-foodo-web-service: &foodo-web-service
-  image: foodo/monorepo:local
+  image: ${FOODO_MONOREPO_IMAGE:-foodo/monorepo:local}
   restart: unless-stopped
   depends_on:
     image-builder:
@@ -37,7 +37,7 @@ x-foodo-web-service: &foodo-web-service
 
 services:
   image-builder:
-    image: foodo/monorepo:local
+    image: ${FOODO_MONOREPO_IMAGE:-foodo/monorepo:local}
     build:
       context: ../..
       dockerfile: Dockerfile

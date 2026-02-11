@@ -121,6 +121,32 @@ git push origin main
 git push origin v0.9.0
 ```
 
+## CI/CD Pipelines
+
+GitHub Actions workflows:
+
+- `CI` (`.github/workflows/ci.yml`)
+  - `lint`
+  - `typecheck`
+  - `build`
+  - `smoke-critical`
+  - `publish-image` (push to GHCR on `main` and `v*` tags)
+- `Deploy (Manual)` (`.github/workflows/deploy.yml`)
+  - manual deploy via SSH (`workflow_dispatch`)
+
+Published image format:
+
+- `ghcr.io/<owner>/foodo-monorepo:<tag>`
+
+Manual deploy uses `FOODO_MONOREPO_IMAGE` in compose and expects these repo secrets:
+
+- `DEPLOY_HOST`
+- `DEPLOY_USER`
+- `DEPLOY_SSH_KEY`
+- `DEPLOY_PATH`
+- `GHCR_USERNAME`
+- `GHCR_TOKEN`
+
 Check gateway health:
 
 ```bash

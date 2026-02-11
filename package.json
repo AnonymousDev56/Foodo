@@ -11,6 +11,7 @@
     "ngrok:stop": "bash ./scripts/stop-ngrok.sh",
     "health": "for p in 3001 3002 3003 3004 3005 3006 3007 3008 3009 8080; do echo \"=== $p ===\"; curl -sS --max-time 2 http://127.0.0.1:$p/health || true; echo; done; for p in 5173 5174 5175; do echo \"=== $p ===\"; curl -sS --max-time 2 http://127.0.0.1:$p >/dev/null && echo ok || true; echo; done",
     "smoke:critical": "node ./scripts/smoke-critical.mjs",
+    "lint": "pnpm -r --if-present run lint",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "release:check": "pnpm typecheck && pnpm smoke:critical",
