@@ -77,25 +77,33 @@ jobs:
       - name: Start core stack for smoke tests
         run: |
           bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml build image-builder
-          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml up -d --remove-orphans \
+          bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml up -d --remove-orphans --wait --wait-timeout 300 \
             postgres redis rabbitmq db-init \
             auth-service orders-service warehouse-service delivery-service notification-service
 
       - name: Wait for API services
         run: |
           set -euo pipefail
+          COMPOSE="bash ./scripts/docker-compose.sh -f infra/docker/docker-compose.yml"
           for p in 3001 3002 3003 3004 3005; do
             echo "Waiting for service on :$p"
             ok=0
-            for i in $(seq 1 60); do
+            for i in $(seq 1 120); do
               if curl -fsS "http://127.0.0.1:${p}/health" >/dev/null; then
                 ok=1
                 break
+              fi
+              if [[ "$p" == "3002" ]] && (( i % 15 == 0 )); then
+                echo "[debug] orders-service still not reachable on :3002 (attempt $i)"
+                $COMPOSE ps || true
+                $COMPOSE logs --tail=120 orders-service || true
               fi
               sleep 2
             done
             if [[ "$ok" -ne 1 ]]; then
               echo "Service on port $p did not become healthy"
+              $COMPOSE ps || true
+              $COMPOSE logs --tail=300 || true
               exit 1
             fi
           done
