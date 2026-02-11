@@ -10,6 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
+      "@foodo/shared-db": ["packages/shared-db/src"],
       "@foodo/shared-types": ["packages/shared-types/src"],
       "@foodo/shared-events": ["packages/shared-events/src"],
       "@foodo/ui-kit": ["packages/ui-kit/src"]
