@@ -182,3 +182,7 @@ Unified gateway entrypoints:
 If `docker` is missing in WSL PATH, project scripts use fallback binary:
 
 `/mnt/wsl/docker-desktop/cli-tools/usr/bin/docker`
+
+## Video Demo
+https://drive.google.com/file/d/1bP_YlJd8DJY0iUqMatW50SfnRPdxzs-G/view?usp=sharing
+
